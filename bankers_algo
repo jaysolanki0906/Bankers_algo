@@ -1,0 +1,160 @@
+#include <stdio.h>
+#include <stdbool.h>
+int main() {
+    int MaxNeed[100][100],n,pn,Allocated[100][100],actulneed[100][100],Available_resources[100],Reallocation[100],process_list[100],alloca[100];
+    bool flag=false;
+    int process[100],temp=0;
+    printf("Enter the Process");
+    scanf("%d",&pn);
+    printf("\n----------------------------------------------\n");
+    printf("Enter Matrix");
+    for(int i=0;i<pn;i++)
+    {
+        printf("\nEnter for process %d",i);
+        for(int j=0;j<3;j++)
+        {
+            printf("\nEnter the number for %c",'A'+j);
+            scanf("%d",&MaxNeed[i][j]);
+        }
+    }
+    printf("\n----------------------------------------------\n");
+    printf("Enter Allocated matrix");
+    for(int i=0;i<pn;i++)
+    {
+        printf("\nEnter for process %d",i);
+        for(int j=0;j<3;j++)
+        {
+            printf("\nEnter the number for %c",'A'+j);
+            scanf("%d",&Allocated[i][j]);
+        }
+    }
+    printf("\nThe matrix which is Maximum need is:-");
+    for(int i=0;i<pn;i++)
+    {
+        printf("\np%d    ",i);
+        for(int j=0;j<3;j++)
+        {
+            printf(" %d",MaxNeed[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\nThe matrix which has benn allocated:-");
+    for(int i=0;i<pn;i++)
+    {
+        printf("\np%d    ",i);
+        for(int j=0;j<3;j++)
+        {
+            printf(" %d",Allocated[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\nCalculating need matrix.................\n");
+    for(int i=0;i<pn;i++)
+    {
+        for(int j=0;j<3;j++)
+        {
+            actulneed[i][j]=(MaxNeed[i][j])-(Allocated[i][j]);
+        }
+    }
+    printf("\n-----------------------------------------\n");
+    printf("\nActula need matrix is as under: -\n");
+    for(int i=0;i<pn;i++)
+    {
+        printf("\np%d    ",i);
+        for(int j=0;j<3;j++)
+        {
+            printf(" %d",actulneed[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n-------------------------------------------\n\nEnter resources available\n");
+    int sum1=0,sum2=0;
+    for(int i=0;i<3;i++)
+    {
+        scanf("%d",&Available_resources[i]);
+    }
+    while(!flag){
+        for(int i=0;i<pn;i++)
+        {
+            sum2=0;
+            for(int s=0;s<3;s++)
+            {
+                sum2+=actulneed[i][s];
+                sum1+=Available_resources[s];
+            }
+            if(sum1>=sum2)
+            {
+                for(int j=0;j<3;j++)
+                {
+                    if(actulneed[i][j]<=Available_resources[j])
+                    {
+                        Reallocation[j]=MaxNeed[i][j];
+                        MaxNeed[i][j]=0;
+                        alloca[j]=Allocated[i][j];
+                        Available_resources[j]+=Allocated[i][j];
+                        if(j==2 && actulneed[i][j]<=Available_resources[j]){
+                        process[temp]=i;
+                        temp++;
+                        }
+                    }
+                    else
+                    {
+                        for(int z=0;z<sizeof(Reallocation) / sizeof(Reallocation[0]);z++)
+                        {
+                            actulneed[i][z]=Reallocation[z];
+                            Available_resources[z]-=alloca[z];
+                        }
+                        break;
+                    }
+                }
+            }
+            if(i==pn-1)
+            {
+                flag=true;
+                for (int g = 0; g < pn;g++)
+                {
+                    for (int h = 0; h < 3; h++) 
+                    {
+                        if (MaxNeed[g][h] != 0) 
+                        {
+                            flag = false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    int flg=0;
+    for(int i=0;i<pn;i++)
+    {
+        for(int j=0;j<3;j++)
+        {
+            if(MaxNeed[i][j]!=0)
+            flg=1;
+        }
+    }
+    if(flg==1)
+    {
+        printf("Not in safe state");
+    }
+    else
+    {
+        printf("\nThe matrix after reallocation :-");
+        for(int i=0;i<pn;i++)
+        {
+            printf("\np%d    ",i);
+            for(int j=0;j<3;j++)
+            {
+                printf(" %d",MaxNeed[i][j]);
+            }
+            printf("\n");
+        }
+        for(int i=0;i<pn;i++)
+        {
+            printf("P%d",process[i]);
+        }
+    }   
+return 0;
+}
+
